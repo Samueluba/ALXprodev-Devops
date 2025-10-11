@@ -36,3 +36,4 @@ wait
 
 # Once all processes are finished, confirm completion
 echo "All Pokémon data fetching completed."
+

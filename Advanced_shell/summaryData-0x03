@@ -1,1 +1,41 @@
+#!/bin/bash
+
+# Define the folder where the JSON files are stored
+INPUT_FOLDER="pokemon_data"
+OUTPUT_CSV="pokemon_report.csv"
+
+# Initialize the CSV file with headers (use `>` to overwrite the file)
+echo "Name,Height (m),Weight (kg)" > "$OUTPUT_CSV"
+
+# Initialize variables for average calculation
+total_height=0
+total_weight=0
+count=0
+
+# Loop through all JSON files in the folder
+for file in "$INPUT_FOLDER"/*.json; do
+    # Extract name, height, and weight using `jq`
+    name=$(jq -r '.name' "$file")
+    height=$(jq -r '.height' "$file")
+    weight=$(jq -r '.weight' "$file")
+
+    # Append the data to the CSV file using `awk` and `sed`
+    printf "%s,%s,%s\n" "$name" "$height" "$weight" >> "$OUTPUT_CSV"
+    
+    # Accumulate height and weight for averaging
+    total_height=$(echo "$total_height + $height" | bc)
+    total_weight=$(echo "$total_weight + $weight" | bc)
+    count=$((count + 1))
+done
+
+# Calculate averages using `awk`
+average_height=$(echo "$total_height / $count" | bc -l)
+average_weight=$(echo "$total_weight / $count" | bc -l)
+
+# Output the CSV file and the averages
+echo "CSV Report generated at: $OUTPUT_CSV"
+cat "$OUTPUT_CSV"
+echo
+echo "Average Height: $(printf "%.2f" $average_height) m"
+echo "Average Weight: $(printf "%.2f" $average_weight) kg"
 

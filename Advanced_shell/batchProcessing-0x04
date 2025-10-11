@@ -34,10 +34,5 @@ done
 # Wait for all background processes to finish
 wait
 
-# Ensure that all background jobs have completed
-if [ $? -eq 0 ]; then
-    echo "All Pokémon data fetching completed successfully."
-else
-    echo "There was an issue fetching data for some Pokémon."
-fi
-
+# Once all processes are finished, confirm completion
+echo "All Pokémon data fetching completed."
